@@ -16,6 +16,19 @@ export default function TypeBox() {
     setSentence(generateSentence());
   }, []);
 
+  const textStyler = (rawSentence: string, len: number) => {
+    const coloredText = rawSentence.substring(0, len);
+    const uncoloredText = rawSentence.substring(len);
+    return (
+      <div>
+        <p>
+          <span className=" text-gray-800">{coloredText}</span>
+          {uncoloredText}
+        </p>
+      </div>
+    );
+  };
+
   const inputHandler = (event: ChangeEvent<HTMLInputElement>) => {
     const value = event.target.value;
     console.log(value);
@@ -29,13 +42,14 @@ export default function TypeBox() {
 
   return (
     <div className="mt-[30vh] font-mono text-2xl px-20">
-      <p>{sentence}</p>
+      {textStyler(sentence, written.length)}
 
       <input
         className="text-black"
         type="text"
         value={written}
         onChange={inputHandler}
+        autoFocus
       />
     </div>
   );
