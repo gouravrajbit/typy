@@ -1,6 +1,30 @@
 'use client';
 import { generate, count } from 'random-words';
 import { ChangeEvent, useCallback, useEffect, useMemo, useState } from 'react';
+import { Letter } from '../types/Letter';
+
+const processSentence = (sentence: string) => {
+  const chars: string[] = sentence.split('');
+  const letterArray: Letter[] = chars.map((char) => ({
+    value: char,
+    typed: false
+  }));
+
+  return letterArray;
+};
+
+function textStyler(letters: Letter[]) {
+  console.log(letters);
+  return (
+    <div>
+      {letters.map((letter: Letter, idx: number) => (
+        <span key={idx} style={{ color: letter.typed ? 'green' : 'red' }}>
+          {letter.value}
+        </span>
+      ))}
+    </div>
+  );
+}
 
 export default function TypeBox() {
   const generateSentence = () => {
@@ -11,23 +35,16 @@ export default function TypeBox() {
 
   const [sentence, setSentence] = useState<string>('');
   const [written, setWritten] = useState<string>('');
+  const [letters, setLetters] = useState<Letter[]>([]);
 
   useEffect(() => {
     setSentence(generateSentence());
-  }, []);
+    console.log('sent' + sentence);
 
-  const textStyler = (rawSentence: string, len: number) => {
-    const coloredText = rawSentence.substring(0, len);
-    const uncoloredText = rawSentence.substring(len);
-    return (
-      <div>
-        <p>
-          <span className=" text-gray-800">{coloredText}</span>
-          {uncoloredText}
-        </p>
-      </div>
-    );
-  };
+    setLetters(processSentence(sentence));
+
+    console.log(letters);
+  }, []);
 
   const inputHandler = (event: ChangeEvent<HTMLInputElement>) => {
     const value = event.target.value;
@@ -42,7 +59,7 @@ export default function TypeBox() {
 
   return (
     <div className="mt-[30vh] font-mono text-2xl px-20">
-      {textStyler(sentence, written.length)}
+      {textStyler(letters)}
 
       <input
         className="text-black"
