@@ -31,6 +31,7 @@ function textStyler(letters: Letter[]) {
           style={{
             color: letter.typed ? (letter.correct ? 'green' : 'red') : 'white'
           }}
+          className={letter.active ? 'underline underline-offset-2' : ''}
         >
           {letter.value}
         </span>
@@ -73,17 +74,19 @@ export default function TypeBox() {
     } else {
       setLetters((oldLetters) => {
         return oldLetters.map((letter, idx) => {
+          let newLetter = Object.assign({}, letter);
           if (letter.position < typedLength) {
-            const newLetter = {
+            newLetter = {
               ...letter,
               typed: true,
-              correct: value[idx] === letter.value
+              correct: value[idx] === letter.value,
+              active: false
             };
-
-            return newLetter;
+          } else if (letter.position === typedLength) {
+            newLetter.active = true;
           }
 
-          return letter;
+          return newLetter;
         });
       });
     }
