@@ -8,7 +8,8 @@ const processSentence = (sentence: string) => {
   const letterArray: Letter[] = chars.map((char, idx) => ({
     value: char,
     typed: false,
-    position: idx
+    position: idx,
+    correct: false
   }));
 
   return letterArray;
@@ -18,7 +19,12 @@ function textStyler(letters: Letter[]) {
   return (
     <div>
       {letters.map((letter: Letter, idx: number) => (
-        <span key={idx} style={{ color: letter.typed ? 'green' : 'red' }}>
+        <span
+          key={idx}
+          style={{
+            color: letter.typed ? (letter.correct ? 'green' : 'red') : 'white'
+          }}
+        >
           {letter.value}
         </span>
       ))}
@@ -53,17 +59,21 @@ export default function TypeBox() {
   const inputHandler = (event: ChangeEvent<HTMLInputElement>) => {
     const value = event.target.value;
     const typedLength = value.length;
+
     if (value.length === sentence.length) {
       setSentence(generateSentence());
       setWritten('');
     } else {
       setLetters((oldLetters) => {
-        return oldLetters.map((letter) => {
+        return oldLetters.map((letter, idx) => {
           if (letter.position < typedLength) {
-            return {
+            const newLetter = {
               ...letter,
-              typed: true
+              typed: true,
+              correct: value[idx] === letter.value
             };
+
+            return newLetter;
           }
 
           return letter;
