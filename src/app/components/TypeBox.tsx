@@ -51,16 +51,17 @@ export default function TypeBox() {
   const [written, setWritten] = useState<string>('');
   const [letters, setLetters] = useState<Letter[]>([]);
 
-  useEffect(() => {
+  const freshen = () => {
     setSentence(() => {
       const framedSentence = generateSentence();
       setLetters(processSentence(framedSentence));
+      setWritten('');
       return framedSentence;
     });
+  };
 
-    console.log('sent' + sentence.length);
-
-    console.log('letter' + letters);
+  useEffect(() => {
+    freshen();
   }, []);
 
   const inputHandler = (event: ChangeEvent<HTMLInputElement>) => {
@@ -68,8 +69,7 @@ export default function TypeBox() {
     const typedLength = value.length;
 
     if (value.length === sentence.length) {
-      setSentence(generateSentence());
-      setWritten('');
+      freshen();
     } else {
       setLetters((oldLetters) => {
         return oldLetters.map((letter, idx) => {
