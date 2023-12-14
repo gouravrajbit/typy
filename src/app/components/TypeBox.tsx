@@ -42,7 +42,7 @@ function textStyler(letters: Letter[]) {
 
 export default function TypeBox() {
   const generateSentence = () => {
-    const words: string[] = generate({ min: 20, max: 30 });
+    const words: string[] = generate({ min: 28, max: 30 });
     const sentence: string = words.join(' ');
     console.log('in the making ->' + sentence);
     return sentence;
@@ -105,7 +105,10 @@ export default function TypeBox() {
   };
 
   return (
-    <div className="mt-[30vh] font-mono text-2xl px-20" onClick={focusInput}>
+    <div
+      className="mt-[27vh] font-mono text-2xl w-[70%] mx-auto leading-loose"
+      onClick={focusInput}
+    >
       {textStyler(letters)}
 
       <input
