@@ -14,7 +14,6 @@ const processSentence = (sentence: string) => {
 };
 
 function textStyler(letters: Letter[]) {
-  console.log(letters);
   return (
     <div>
       {letters.map((letter: Letter, idx: number) => (
@@ -30,6 +29,7 @@ export default function TypeBox() {
   const generateSentence = () => {
     const words: string[] = generate({ min: 20, max: 30 });
     const sentence: string = words.join(' ');
+    console.log('in the making ->' + sentence);
     return sentence;
   };
 
@@ -38,12 +38,15 @@ export default function TypeBox() {
   const [letters, setLetters] = useState<Letter[]>([]);
 
   useEffect(() => {
-    setSentence(generateSentence());
-    console.log('sent' + sentence);
+    setSentence(() => {
+      const framedSentence = generateSentence();
+      setLetters(processSentence(framedSentence));
+      return framedSentence;
+    });
 
-    setLetters(processSentence(sentence));
+    console.log('sent' + sentence.length);
 
-    console.log(letters);
+    console.log('letter' + letters);
   }, []);
 
   const inputHandler = (event: ChangeEvent<HTMLInputElement>) => {
