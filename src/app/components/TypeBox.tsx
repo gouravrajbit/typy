@@ -1,6 +1,13 @@
 'use client';
 import { generate, count } from 'random-words';
-import { ChangeEvent, useCallback, useEffect, useMemo, useState } from 'react';
+import {
+  ChangeEvent,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState
+} from 'react';
 import { Letter } from '../types/Letter';
 
 const processSentence = (sentence: string) => {
@@ -24,6 +31,7 @@ function textStyler(letters: Letter[]) {
           style={{
             color: letter.typed ? (letter.correct ? 'green' : 'red') : 'white'
           }}
+          className={letter.active ? 'underline underline-offset-2' : ''}
         >
           {letter.value}
         </span>
@@ -44,16 +52,17 @@ export default function TypeBox() {
   const [written, setWritten] = useState<string>('');
   const [letters, setLetters] = useState<Letter[]>([]);
 
-  useEffect(() => {
+  const freshen = () => {
     setSentence(() => {
       const framedSentence = generateSentence();
       setLetters(processSentence(framedSentence));
+      setWritten('');
       return framedSentence;
     });
+  };
 
-    console.log('sent' + sentence.length);
-
-    console.log('letter' + letters);
+  useEffect(() => {
+    freshen();
   }, []);
 
   const inputHandler = (event: ChangeEvent<HTMLInputElement>) => {
@@ -61,22 +70,23 @@ export default function TypeBox() {
     const typedLength = value.length;
 
     if (value.length === sentence.length) {
-      setSentence(generateSentence());
-      setWritten('');
+      freshen();
     } else {
       setLetters((oldLetters) => {
         return oldLetters.map((letter, idx) => {
+          let newLetter = Object.assign({}, letter);
           if (letter.position < typedLength) {
-            const newLetter = {
+            newLetter = {
               ...letter,
               typed: true,
-              correct: value[idx] === letter.value
+              correct: value[idx] === letter.value,
+              active: false
             };
-
-            return newLetter;
+          } else if (letter.position === typedLength) {
+            newLetter.active = true;
           }
 
-          return letter;
+          return newLetter;
         });
       });
     }
@@ -84,12 +94,24 @@ export default function TypeBox() {
     setWritten(event.target.value);
   };
 
+  const inputRef = useRef<HTMLInputElement | null>(null);
+
+  // Function to focus on the input
+  const focusInput = () => {
+    // Check if the ref is available before calling focus
+    if (inputRef.current) {
+      inputRef.current.focus();
+    }
+  };
+
   return (
-    <div className="mt-[30vh] font-mono text-2xl px-20">
+    <div className="mt-[30vh] font-mono text-2xl px-20" onClick={focusInput}>
       {textStyler(letters)}
 
       <input
+        ref={inputRef}
         className="text-black"
+        style={{ opacity: '0' }}
         type="text"
         value={written}
         onChange={inputHandler}

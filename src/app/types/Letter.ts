@@ -3,4 +3,5 @@ export interface Letter {
     typed: boolean,
     correct: boolean,
     position: number,
+    active?: boolean
 }
