@@ -1,6 +1,13 @@
 'use client';
 import { generate, count } from 'random-words';
-import { ChangeEvent, useCallback, useEffect, useMemo, useState } from 'react';
+import {
+  ChangeEvent,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState
+} from 'react';
 import { Letter } from '../types/Letter';
 
 const processSentence = (sentence: string) => {
@@ -84,12 +91,24 @@ export default function TypeBox() {
     setWritten(event.target.value);
   };
 
+  const inputRef = useRef<HTMLInputElement | null>(null);
+
+  // Function to focus on the input
+  const focusInput = () => {
+    // Check if the ref is available before calling focus
+    if (inputRef.current) {
+      inputRef.current.focus();
+    }
+  };
+
   return (
-    <div className="mt-[30vh] font-mono text-2xl px-20">
+    <div className="mt-[30vh] font-mono text-2xl px-20" onClick={focusInput}>
       {textStyler(letters)}
 
       <input
+        ref={inputRef}
         className="text-black"
+        style={{ opacity: '0' }}
         type="text"
         value={written}
         onChange={inputHandler}
