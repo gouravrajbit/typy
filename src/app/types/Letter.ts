@@ -1,4 +1,5 @@
 export interface Letter {
     value: string,
-    typed: boolean
+    typed: boolean,
+    position: number
 }

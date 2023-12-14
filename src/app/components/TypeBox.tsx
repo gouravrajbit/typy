@@ -5,9 +5,10 @@ import { Letter } from '../types/Letter';
 
 const processSentence = (sentence: string) => {
   const chars: string[] = sentence.split('');
-  const letterArray: Letter[] = chars.map((char) => ({
+  const letterArray: Letter[] = chars.map((char, idx) => ({
     value: char,
-    typed: false
+    typed: false,
+    position: idx
   }));
 
   return letterArray;
@@ -51,13 +52,26 @@ export default function TypeBox() {
 
   const inputHandler = (event: ChangeEvent<HTMLInputElement>) => {
     const value = event.target.value;
-    console.log(value);
+    const typedLength = value.length;
     if (value.length === sentence.length) {
       setSentence(generateSentence());
       setWritten('');
     } else {
-      setWritten(event.target.value);
+      setLetters((oldLetters) => {
+        return oldLetters.map((letter) => {
+          if (letter.position < typedLength) {
+            return {
+              ...letter,
+              typed: true
+            };
+          }
+
+          return letter;
+        });
+      });
     }
+
+    setWritten(event.target.value);
   };
 
   return (
