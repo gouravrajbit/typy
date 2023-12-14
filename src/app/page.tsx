@@ -2,7 +2,8 @@ import TypeBox from './components/TypeBox';
 
 export default function Home() {
   return (
-    <div className="bg-purple-700 h-[100vh]">
+    <div>
+      <div className="gradient" />
       <header>
         <h1 className="font-mono text-2xl pt-10 font-extrabold text-center">
           typy _/
